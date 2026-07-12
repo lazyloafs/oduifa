@@ -2,6 +2,7 @@ import type { Principal } from './opele';
 import type { OduRecord, SectionHit } from './corpus';
 import { extractSections } from './corpus';
 import type { OduThrow } from './opele';
+import { translateToEnglish } from './translate';
 
 /** Short traditional character notes for the 16 principals (study aid). */
 export const PRINCIPAL_MEANINGS: Record<
@@ -9,84 +10,84 @@ export const PRINCIPAL_MEANINGS: Record<
   { title: string; essence: string }
 > = {
   Ejiogbe: {
-    title: 'El que sostiene / el comienzo',
+    title: 'The supporter / the beginning',
     essence:
-      'Apertura, palabra, liderazgo y el principio de las cosas. Habla de caminos claros y de organizar la cabeza con el cuerpo.',
+      'Openings, speech, leadership, and the principle of things. Speaks of clear paths and aligning the head with the body.',
   },
   Oyeku: {
-    title: 'La madre de la muerte / el cierre',
+    title: 'Mother of death / the closing',
     essence:
-      'Transformación, quietud y lo que se oculta. Pide respeto a los difuntos, precaución y no forzar lo que aún no madura.',
+      'Transformation, stillness, and what is hidden. Asks respect for the dead, caution, and not forcing what is not yet ripe.',
   },
   Iwori: {
-    title: 'El vidente profundo',
+    title: 'The deep seer',
     essence:
-      'Intuición, investigación y ver detrás de las apariencias. Advierte contra la prisa y el chisme; favorece la observación.',
+      'Intuition, investigation, and seeing behind appearances. Warns against haste and gossip; favors careful observation.',
   },
   Idi: {
-    title: 'El sello / el cierre del círculo',
+    title: 'The seal / closing the circle',
     essence:
-      'Conclusiones, fertilidad del asunto y fijar lo empezado. Habla de consolidar acuerdos y cuidar la espalda / base.',
+      'Conclusions, fertility of a matter, and fixing what was started. Speaks of consolidating agreements and protecting your foundation.',
   },
   Irosun: {
-    title: 'El que resuena / la sangre y la raíz',
+    title: 'The one who resonates / blood and root',
     essence:
-      'Linaje, memoria y lo que “suena” en la sangre. Pide honrar a los mayores y no olvidar promesas hechas.',
+      'Lineage, memory, and what “sounds” in the blood. Asks honor for elders and not forgetting promises made.',
   },
   Owonrin: {
-    title: 'La cabeza invertida / el cambio',
+    title: 'The inverted head / change',
     essence:
-      'Inversión de planes, mudanzas y sorpresas. Lo que parece al revés puede acomodarse si se acepta el giro.',
+      'Reversed plans, moves, and surprises. What looks upside-down can settle if you accept the turn.',
   },
   Obara: {
-    title: 'El que flota / la prosperidad incierta',
+    title: 'The one who floats / uncertain prosperity',
     essence:
-      'Riqueza aparente, palabras dulces y riesgo de engaño. Exige honestidad en el trato y no confiar solo en apariencias.',
+      'Apparent wealth, sweet words, and risk of deceit. Demands honesty in dealings; do not trust appearances alone.',
   },
   Okanran: {
-    title: 'El que golpea / la confrontación',
+    title: 'The beater / confrontation',
     essence:
-      'Choques, genio fuerte y justicia. Advierte no levantar la mano ni enredarse en pleitos; canalizar la fuerza.',
+      'Clashes, strong temper, and justice. Warns not to raise a hand or get tangled in lawsuits; channel the force.',
   },
   Ogunda: {
-    title: 'El creador / el hierro',
+    title: 'The creator / iron',
     essence:
-      'Trabajo, Oggún, corte y construcción. Favorable al esfuerzo concreto; cuidado con accidentes y herramientas.',
+      'Work, Oggún, cutting and building. Favors concrete effort; watch for accidents and tools.',
   },
   Osa: {
-    title: 'El espíritu de Sa / el viento',
+    title: 'The spirit of Sa / the wind',
     essence:
-      'Movimiento rápido, Oyá y cambios bruscos. Pide flexibilidad y no aferrarse a lo que el viento ya se lleva.',
+      'Swift movement, Oyá, and sudden change. Asks flexibility; do not cling to what the wind already carries away.',
   },
   Ika: {
-    title: 'El controlador / el círculo',
+    title: 'The controller / the circle',
     essence:
-      'Límites, veneno y cura. Habla de controlar la lengua y el exceso; lo mismo que daña puede sanar con medida.',
+      'Boundaries, poison and cure. Speaks of controlling the tongue and excess; what harms can also heal in measure.',
   },
   Oturupon: {
-    title: 'El portador / la carga',
+    title: 'The bearer / the burden',
     essence:
-      'Peso, enfermedad y responsabilidad. Invita a aliviar cargas, cuidar la salud y no cargar lo ajeno.',
+      'Weight, illness, and responsibility. Invites you to lighten loads, care for health, and not carry what is not yours.',
   },
   Otura: {
-    title: 'El consolador / la buena palabra',
+    title: 'The comforter / the good word',
     essence:
-      'Consuelo, enseñanza y caminos religiosos. Favorece estudiar, enseñar y hablar con verdad suave.',
+      'Consolation, teaching, and religious paths. Favors studying, teaching, and speaking soft truth.',
   },
   Irete: {
-    title: 'El que aplasta / la perseverancia',
+    title: 'The crusher / perseverance',
     essence:
-      'Presión, competencia y llegar lejos a fuerza de constancia. Cuidado con la soberbia al subir.',
+      'Pressure, competition, and going far through constancy. Beware pride as you rise.',
   },
   Ose: {
-    title: 'El conquistador / la victoria de Ochún',
+    title: 'The conqueror / Ochún’s victory',
     essence:
-      'Dulzura, atracción y triunfo por la vía del cariño. Relacionado con Ochún; pide diplomacia y no la fuerza bruta.',
+      'Sweetness, attraction, and triumph through affection. Linked to Ochún; asks diplomacy, not brute force.',
   },
   Oragun: {
-    title: 'El dador / Ofún, la plenitud',
+    title: 'The giver / Ofún, fullness',
     essence:
-      'Sabiduría blanca, pureza y dar/recibir. Habla de Obatalá, claridad mental y no manchar lo sagrado.',
+      'White wisdom, purity, and giving/receiving. Speaks of Obatalá, mental clarity, and not staining the sacred.',
   },
 };
 
@@ -98,6 +99,7 @@ export interface ReadingDescription {
   rightMeaning: string;
   leftMeaning: string;
   combinationNote: string;
+  translating?: boolean;
 }
 
 function firstParagraph(sectionBody: string, max = 420): string {
@@ -124,37 +126,53 @@ export function describeReading(
   const left = PRINCIPAL_MEANINGS[th.secondary];
   const sections = extractSections(record?.text || '');
 
-  const ifaSays =
+  const ifaSaysEs =
     sectionByTitle(sections, /if[aá]/i) ||
     (record?.text
       ? firstParagraph(record.text.replace(/^[\s\S]{0,80}?W[oó].*?dice/i, ''), 380)
       : '');
 
-  const proverb =
-    sectionByTitle(sections, /refr|proverb/i) ||
-    '';
+  const proverbEs = sectionByTitle(sections, /refr|proverb/i) || '';
 
   const combinationNote = th.isMeji
-    ? `${th.primary} Meji duplica su propia energía: el mensaje llega completo y sin mezcla. Es un odù mayor (Ojú Odù).`
-    : `La pierna derecha (${th.primary}) marca el tono principal; la izquierda (${th.secondary}) matiza, corrige o apoya. Juntos forman el omolúo ${th.displayName}.`;
+    ? `${th.primary} Meji doubles its own energy: the message arrives complete and unmixed. It is a major odù (Ojú Odù).`
+    : `The right leg (${th.primary}) sets the main tone; the left (${th.secondary}) nuances, corrects, or supports. Together they form the omolúo ${th.displayName}.`;
 
   const summaryParts = [
-    `Lo que se divinó es **${th.displayName}**.`,
+    `What was divined is **${th.displayName}**.`,
     right.essence,
     th.isMeji
-      ? 'Al ser Meji, esa esencia se afirma con fuerza.'
-      : `Se combina con la corriente de ${th.secondary}: ${left.essence}`,
+      ? 'As Meji, that essence is strongly affirmed.'
+      : `It combines with the current of ${th.secondary}: ${left.essence}`,
   ];
 
   return {
     headline: th.displayName,
     summary: summaryParts.join(' '),
-    ifaSays: ifaSays || 'Consulte el corpus completo o tire de nuevo cuando el texto esté disponible.',
-    proverb: proverb || '—',
+    ifaSays:
+      ifaSaysEs ||
+      'Open the full corpus or cast again when text is available for this odù.',
+    proverb: proverbEs || '—',
     rightMeaning: `${right.title}. ${right.essence}`,
     leftMeaning: th.isMeji
-      ? `${right.title} (duplicado).`
+      ? `${right.title} (doubled).`
       : `${left.title}. ${left.essence}`,
     combinationNote,
+    translating: Boolean(ifaSaysEs || (proverbEs && proverbEs !== '—')),
   };
+}
+
+/** Translate corpus-sourced fields (Ifá says / proverb) into English. */
+export async function localizeReading(
+  reading: ReadingDescription
+): Promise<ReadingDescription> {
+  const [ifaSays, proverb] = await Promise.all([
+    reading.ifaSays && reading.ifaSays !== '—'
+      ? translateToEnglish(reading.ifaSays)
+      : Promise.resolve(reading.ifaSays),
+    reading.proverb && reading.proverb !== '—'
+      ? translateToEnglish(reading.proverb)
+      : Promise.resolve(reading.proverb),
+  ]);
+  return { ...reading, ifaSays, proverb, translating: false };
 }

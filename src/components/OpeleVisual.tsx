@@ -47,8 +47,8 @@ export function OpeleVisual({
         role="img"
         aria-label={
           throwData
-            ? `Opelé mostrando el signo ${name}`
-            : 'Opelé listo para tirar'
+            ? `Opelé showing the sign ${name}`
+            : 'Opelé ready to cast'
         }
       >
         <defs>
@@ -222,7 +222,7 @@ export function OpeleVisual({
           fontFamily="Source Sans 3, sans-serif"
           letterSpacing="0.12em"
         >
-          DER
+          RIGHT
         </text>
         <text
           x={cx - colGap / 2}
@@ -233,7 +233,7 @@ export function OpeleVisual({
           fontFamily="Source Sans 3, sans-serif"
           letterSpacing="0.12em"
         >
-          IZQ
+          LEFT
         </text>
 
         {/* Sign name */}
@@ -256,11 +256,11 @@ export function OpeleVisual({
               {right.join(' ')} <span className="sep">·</span> {left.join(' ')}
             </span>
             <span className="legend">
-              I = abierto · II = cerrado
+              I = open · II = closed
             </span>
           </>
         ) : (
-          <span className="legend">Tire el opelé para revelar el signo</span>
+          <span className="legend">Cast the opelé to reveal the sign</span>
         )}
       </figcaption>
     </figure>

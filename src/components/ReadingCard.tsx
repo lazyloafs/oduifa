@@ -10,10 +10,10 @@ export function ReadingCard({ reading, sourceUrl, isMeji }: ReadingCardProps) {
   if (!reading) {
     return (
       <div className="reading-card is-empty">
-        <h2>Lo divinado</h2>
+        <h2>What was divined</h2>
         <p>
-          Cuando tire el opelé, aquí aparecerá el odù, su significado y lo que
-          Ifá dice según el corpus de orula.org.
+          When you cast the opelé, the odù, its meaning, and what Ifá says
+          (translated to English from the orula.org corpus) will appear here.
         </p>
       </div>
     );
@@ -22,20 +22,23 @@ export function ReadingCard({ reading, sourceUrl, isMeji }: ReadingCardProps) {
   return (
     <article className="reading-card">
       <header className="reading-head">
-        <p className="reading-kicker">Lo que se divinó</p>
+        <p className="reading-kicker">What was divined</p>
         <h2>{reading.headline}</h2>
-        {isMeji && <span className="meji-badge">Meji · Odù mayor</span>}
+        {isMeji && <span className="meji-badge">Meji · Major odù</span>}
+        {reading.translating && (
+          <span className="translate-badge">Translating to English…</span>
+        )}
       </header>
 
       <p className="reading-summary">{reading.summary.replace(/\*\*/g, '')}</p>
 
       <div className="reading-legs">
         <div>
-          <h3>Derecha (principal)</h3>
+          <h3>Right (primary)</h3>
           <p>{reading.rightMeaning}</p>
         </div>
         <div>
-          <h3>Izquierda (apoyo)</h3>
+          <h3>Left (support)</h3>
           <p>{reading.leftMeaning}</p>
         </div>
       </div>
@@ -44,19 +47,19 @@ export function ReadingCard({ reading, sourceUrl, isMeji }: ReadingCardProps) {
 
       {reading.proverb && reading.proverb !== '—' && (
         <blockquote className="reading-quote">
-          <span className="quote-label">Refrán</span>
+          <span className="quote-label">Proverb</span>
           {reading.proverb}
         </blockquote>
       )}
 
       <div className="ifa-block">
-        <h3>Ifá dice</h3>
+        <h3>Ifá says</h3>
         <p>{reading.ifaSays}</p>
       </div>
 
       {sourceUrl && (
         <a className="source-link" href={sourceUrl} target="_blank" rel="noreferrer">
-          Texto completo en orula.org →
+          Full text on orula.org →
         </a>
       )}
     </article>

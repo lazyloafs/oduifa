@@ -1,8 +1,9 @@
 import type { OduRecord } from './corpus';
 import type { OduThrow } from './opele';
+import { translateToEnglish, translateMany } from './translate';
 
 const STOP = new Set(
-  'el la los las un una unos unas de del al a y o u en que se es son por para con sin sobre entre como mas más muy ya no si sí su sus mi tus le les lo me te nos os fue ser estar hay este esta estos estas aquel aquello todo toda todos todas otro otra otros otras cuando donde dónde porque porqué porque qué cual cuál cuales cuáles del'.split(
+  'el la los las un una unos unas de del al a y o u en que se es son por para con sin sobre entre como mas más muy ya no si sí su sus mi tus le les lo me te nos os fue ser estar hay este esta estos estas aquel aquello todo toda todos todas otro otra otros otras cuando donde dónde porque porqué porque qué cual cuál cuales cuáles del the and for with that this from'.split(
     /\s+/
   )
 );
@@ -53,23 +54,26 @@ export function buildTriangulationPrompt(
 ): string {
   const blocks = records
     .map(({ throw: th, record }, i) => {
-      const role = i === 0 ? 'ODÙ PRINCIPAL' : `OMOLUÓ / APOYO ${i}`;
-      const body = record?.text ? snippet(record.text, 1400) : '(Sin texto en corpus local)';
-      return `### ${role}: ${th.displayName} (${th.id})\nFuente: ${th.sourceUrl}\n${body}`;
+      const role = i === 0 ? 'MAIN ODÙ' : `OMOLÚO / SUPPORT ${i}`;
+      const body = record?.text
+        ? snippet(record.text, 1400)
+        : '(No text in local corpus)';
+      return `### ${role}: ${th.displayName} (${th.id})\nSource: ${th.sourceUrl}\n${body}`;
     })
     .join('\n\n');
 
-  return `Triangula una lectura de Ifá a partir del odù principal y los signos de apoyo (omoluós).
+  return `Triangulate an Ifá reading from the main odù and support signs (omolúos).
 
-Odù principal: ${main.displayName}
-Apoyos: ${supports.map((s) => s.displayName).join(', ') || '(ninguno)'}
+Main odù: ${main.displayName}
+Supports: ${supports.map((s) => s.displayName).join(', ') || '(none)'}
 
-Usa SOLO el contenido del corpus siguiente. Estructura tu respuesta así:
-1) Síntesis general
-2) Temas que se refuerzan entre principal y apoyos
-3) Advertencias / cuidados (si aparecen en los textos)
-4) Refranes o frases clave (si hay)
-5) Nota de humildad: esto es orientación educativa, no sustituye a un babalawo.
+Use ONLY the corpus content below. The corpus is in Spanish — translate and respond entirely in clear English.
+Structure your answer as:
+1) General synthesis
+2) Themes reinforced between main and supports
+3) Warnings / cautions (if present)
+4) Key proverbs or phrases (translated)
+5) Humility note: educational guidance only; does not replace a babalawo.
 
 CORPUS:
 ${blocks}`;
@@ -81,48 +85,89 @@ export function localTriangulate(
   records: { throw: OduThrow; record?: OduRecord }[]
 ): string {
   const mainRec = records[0]?.record;
-  const supportRecs = records.slice(1).map((r) => r.record).filter(Boolean) as OduRecord[];
-  const allTexts = [mainRec, ...supportRecs].map((r) => r?.text || '').filter(Boolean);
+  const supportRecs = records
+    .slice(1)
+    .map((r) => r.record)
+    .filter(Boolean) as OduRecord[];
+  const allTexts = [mainRec, ...supportRecs]
+    .map((r) => r?.text || '')
+    .filter(Boolean);
   const themes = sharedThemes(allTexts);
   const mainKeys = topKeywords(mainRec?.text || '', 10);
 
   const lines: string[] = [];
-  lines.push('## Síntesis local (sin OpenAI)');
+  lines.push('## Local synthesis (translating corpus themes)');
   lines.push('');
   lines.push(
-    `Lectura centrada en **${main.displayName}**, refinada por ${
+    `Reading centered on **${main.displayName}**, refined by ${
       supports.length
         ? supports.map((s) => s.displayName).join(', ')
-        : 'ningún omoluó adicional'
+        : 'no additional omolúo'
     }.`
   );
   lines.push('');
-  lines.push('### Temas que se cruzan');
+  lines.push('### Crossing themes (from Spanish corpus keywords)');
   if (themes.length) {
     lines.push(themes.map((t) => `• ${t}`).join('\n'));
   } else {
-    lines.push('• (Pocos solapamientos léxicos claros; revise los textos completos abajo.)');
+    lines.push('• (Few clear lexical overlaps; see full texts.)');
   }
   lines.push('');
-  lines.push('### Énfasis del odù principal');
-  lines.push(mainKeys.length ? mainKeys.map((t) => `• ${t}`).join('\n') : '• Corpus vacío para este odù.');
+  lines.push('### Emphasis of the main odù');
+  lines.push(
+    mainKeys.length
+      ? mainKeys.map((t) => `• ${t}`).join('\n')
+      : '• Empty corpus for this odù.'
+  );
   lines.push('');
-  lines.push('### Narrativa fusionada');
+  lines.push('### Merged narrative (source language — translate below if needed)');
   if (mainRec?.text) {
     lines.push(snippet(mainRec.text, 700));
   } else {
-    lines.push('_No hay texto local del principal. Ejecute `npm run scrape`._');
+    lines.push('_No local main text. Run `npm run scrape`._');
   }
   for (let i = 0; i < supports.length; i++) {
     const rec = supportRecs[i];
     lines.push('');
-    lines.push(`### Apoyo: ${supports[i].displayName}`);
-    lines.push(rec?.text ? snippet(rec.text, 480) : '_Sin texto en corpus._');
+    lines.push(`### Support: ${supports[i].displayName}`);
+    lines.push(rec?.text ? snippet(rec.text, 480) : '_No corpus text._');
   }
   lines.push('');
-  lines.push('### Nota');
+  lines.push('### Note');
   lines.push(
-    'Esta síntesis es automática (extracción de temas + fusión de fragmentos del corpus de orula.org). No reemplaza la consulta con un babalawo. Con `OPENAI_API_KEY` se puede obtener una triangulación narrativa más elaborada.'
+    'This synthesis is automatic. It does not replace consultation with a babalawo. With OPENAI_API_KEY you get a fuller English triangulation.'
   );
   return lines.join('\n');
+}
+
+/** Translate local triangulation narrative blocks to English. */
+export async function localizeTriangulation(text: string): Promise<string> {
+  // Translate substantial non-heading paragraphs
+  const lines = text.split('\n');
+  const out: string[] = [];
+  for (const line of lines) {
+    if (
+      !line.trim() ||
+      line.startsWith('#') ||
+      line.startsWith('•') ||
+      line.startsWith('_') ||
+      line.length < 40
+    ) {
+      out.push(line);
+      continue;
+    }
+    out.push(await translateToEnglish(line));
+  }
+  return out.join('\n');
+}
+
+export async function localizeTriangulationSnippets(
+  text: string
+): Promise<string> {
+  const chunks = text
+    .split(/\n\n+/)
+    .map((c) => c.trim())
+    .filter(Boolean);
+  const translated = await translateMany(chunks);
+  return translated.join('\n\n');
 }

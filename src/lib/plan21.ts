@@ -158,32 +158,32 @@ export function buildActionPool(
     {
       id: 'rest-silence',
       kind: 'rest',
-      label: 'Día de silencio y escucha',
+      label: 'Day of silence and listening',
       detail:
-        'Baje el ritmo: menos discusión, más observación. Deje que la cabeza se una al cuerpo.',
-      tags: ['calma', 'paciencia', 'silencio', 'equilibrio'],
+        'Slow the pace: less arguing, more observation. Let the head reunite with the body.',
+      tags: ['calm', 'patience', 'silence', 'balance'],
       intensity: 1,
-      sourceOdu: 'ritmo',
+      sourceOdu: 'pacing',
     },
     {
       id: 'rest-gratitude',
       kind: 'rest',
-      label: 'Gratitud y orden del hogar',
+      label: 'Gratitude and order at home',
       detail:
-        'Ordene un rincón de su casa, dé gracias a su Ángel de la Guarda y evite enredos ajenos.',
-      tags: ['hogar', 'orden', 'angel', 'respeto'],
+        'Tidy a corner of your home, thank your guardian angel, and avoid other people’s dramas.',
+      tags: ['home', 'order', 'angel', 'respect'],
       intensity: 1,
-      sourceOdu: 'ritmo',
+      sourceOdu: 'pacing',
     },
     {
       id: 'rest-body',
       kind: 'rest',
-      label: 'Cuidado del cuerpo',
+      label: 'Care for the body',
       detail:
-        'Descanse el estómago y la espalda; hidratación simple, sin excesos ni ropa que atraiga conflicto.',
-      tags: ['salud', 'cuerpo', 'descanso', 'higiene'],
+        'Rest the stomach and back; simple hydration, no excesses or clothes that invite conflict.',
+      tags: ['health', 'body', 'rest', 'hygiene'],
       intensity: 1,
-      sourceOdu: 'ritmo',
+      sourceOdu: 'pacing',
     },
   ];
 
@@ -204,12 +204,12 @@ export function buildActionPool(
 function shortLabel(line: string, kind: ActionKind): string {
   const prefix =
     kind === 'caution'
-      ? 'Cuidado'
+      ? 'Caution'
       : kind === 'practice'
-        ? 'Práctica'
+        ? 'Practice'
         : kind === 'relation'
-          ? 'Vínculo'
-          : 'Estudio';
+          ? 'Relations'
+          : 'Study';
   const clip = line.length > 72 ? line.slice(0, 69).replace(/\s+\S*$/, '') + '…' : line;
   return `${prefix}: ${clip}`;
 }
@@ -310,9 +310,9 @@ export function evolve21DayPlan(
     const fallback: AdviceAction = {
       id: 'fallback-study',
       kind: 'study',
-      label: 'Estudiar el odù principal',
-      detail: `Lea con calma el texto de ${main.displayName} y anote lo que le resuene.`,
-      tags: ['estudio', 'odu', 'paciencia'],
+      label: 'Study the main odù',
+      detail: `Calmly read the text of ${main.displayName} and note what resonates.`,
+      tags: ['study', 'odu', 'patience'],
       intensity: 1,
       sourceOdu: main.displayName,
     };
@@ -371,10 +371,10 @@ export function evolve21DayPlan(
     days,
     objectives: { alignmentGap, cautionGap, monotony, pacingStrain },
     objectiveNames: [
-      'Brecha de alineación con el odù',
-      'Brecha de cuidados / advertencias',
-      'Monotonía (falta de variedad)',
-      'Tensión de ritmo (días intensos seguidos)',
+      'Alignment gap with the odù',
+      'Caution / warning coverage gap',
+      'Monotony (lack of variety)',
+      'Pacing strain (stacked intense days)',
     ],
     paretoSize: result.paretoFront.length,
     populationSize,
@@ -396,32 +396,56 @@ function buildSummary(
 ): string {
   const supportsTxt = supports.length
     ? supports.map((s) => s.displayName).join(', ')
-    : 'sin omoluós adicionales';
+    : 'no additional omolúos';
   return [
-    `Plan de 21 días evolucionado con NSGA-II a partir de **${main.displayName}**`,
-    `(apoyos: ${supportsTxt}).`,
-    `Conceptos dominantes del corpus: ${concepts.slice(0, 8).join(', ') || '—'}.`,
-    `Frente de Pareto: ${paretoSize} planes no dominados; se eligió el punto de compromiso (rodilla) que equilibra alineación, cuidados, variedad y ritmo sostenible.`,
-    `Scores (menor = mejor): alineación ${(obj[0] * 100).toFixed(0)}%, cuidados ${(obj[1] * 100).toFixed(0)}%, monotonía ${(obj[2] * 100).toFixed(0)}%, tensión ${(obj[3] * 100).toFixed(0)}%.`,
-    `Esto es orientación educativa basada en el texto de orula.org — no sustituye a un babalawo.`,
+    `21-day plan evolved with NSGA-II from **${main.displayName}**`,
+    `(supports: ${supportsTxt}).`,
+    `Dominant corpus concepts: ${concepts.slice(0, 8).join(', ') || '—'}.`,
+    `Pareto front: ${paretoSize} non-dominated plans; the knee/compromise point balances alignment, caution, variety, and sustainable pacing.`,
+    `Scores (lower = better): alignment ${(obj[0] * 100).toFixed(0)}%, caution ${(obj[1] * 100).toFixed(0)}%, monotony ${(obj[2] * 100).toFixed(0)}%, strain ${(obj[3] * 100).toFixed(0)}%.`,
+    `Educational guidance from orula.org text — does not replace a babalawo.`,
   ].join(' ');
 }
 
 export function formatPlanMarkdown(plan: Plan21Result): string {
   const lines: string[] = [];
-  lines.push('## Plan de 21 días (NSGA-II)');
+  lines.push('## 21-day plan (NSGA-II)');
   lines.push('');
   lines.push(plan.summary);
   lines.push('');
-  lines.push('### Conceptos triangulados');
+  lines.push('### Triangulated concepts');
   lines.push(plan.concepts.map((c) => `• ${c}`).join('\n') || '• —');
   lines.push('');
-  lines.push('### Calendario');
+  lines.push('### Calendar');
   for (const d of plan.days) {
     lines.push(
-      `**Día ${d.day}** (${d.dateISO}) — _${d.action.kind}_ · ${d.action.label}\n${d.action.detail} _(fuente: ${d.action.sourceOdu})_`
+      `**Day ${d.day}** (${d.dateISO}) — _${d.action.kind}_ · ${d.action.label}\n${d.action.detail} _(source: ${d.action.sourceOdu})_`
     );
     lines.push('');
   }
   return lines.join('\n');
+}
+
+/** Translate day advice drawn from Spanish corpus into English. */
+export async function localizePlan(plan: Plan21Result): Promise<Plan21Result> {
+  const { translateToEnglish, translateMany } = await import('./translate');
+  const details = plan.days.map((d) => d.action.detail);
+  const labels = plan.days.map((d) => d.action.label);
+  const [enDetails, enLabels, enSummary] = await Promise.all([
+    translateMany(details),
+    translateMany(labels),
+    translateToEnglish(plan.summary),
+  ]);
+  return {
+    ...plan,
+    summary: enSummary,
+    days: plan.days.map((d, i) => ({
+      ...d,
+      action: {
+        ...d.action,
+        detail: enDetails[i],
+        label: enLabels[i],
+      },
+    })),
+  };
 }

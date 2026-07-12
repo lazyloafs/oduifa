@@ -13,6 +13,11 @@ export interface OpweleAPI {
     text?: string;
     error?: string;
   }>;
+  translateOpenAI: (payload: { text: string }) => Promise<{
+    ok: boolean;
+    text?: string;
+    error?: string;
+  }>;
 }
 
 declare global {

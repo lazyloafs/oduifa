@@ -62,7 +62,7 @@ ipcMain.handle('ai:triangulate', async (_evt, payload) => {
         {
           role: 'system',
           content:
-            'Eres un asistente respetuoso de la tradición Ifá / Lucumí cubana. Sintetizas lecturas de odù a partir de textos del corpus (español). No inventes rituales peligrosos. Sé claro, estructurado y reverente. Responde en español.',
+            'You are a respectful assistant of Cuban Lucumí / Ifá tradition. You synthesize odù readings from corpus texts (often Spanish). Always respond in clear English. Do not invent dangerous rituals. Be structured and reverent.',
         },
         { role: 'user', content: payload.prompt },
       ],
@@ -84,6 +84,45 @@ ipcMain.handle('ai:triangulate', async (_evt, payload) => {
     return { ok: true, mode: 'openai', text };
   } catch (err) {
     return { ok: false, mode: 'openai', error: String(err && err.message ? err.message : err) };
+  }
+});
+
+ipcMain.handle('ai:translate', async (_evt, payload) => {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) {
+    return { ok: false, error: 'NO_KEY' };
+  }
+  const text = String(payload?.text || '').slice(0, 6000);
+  if (!text.trim()) return { ok: true, text: '' };
+  try {
+    const body = {
+      model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+      temperature: 0.2,
+      messages: [
+        {
+          role: 'system',
+          content:
+            'Translate the user text from Spanish to natural English. Keep Ifá / Yoruba proper names (odù names, orisha names) unchanged. Output only the translation.',
+        },
+        { role: 'user', content: text },
+      ],
+    };
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      return { ok: false, error: `HTTP ${res.status}: ${t.slice(0, 300)}` };
+    }
+    const json = await res.json();
+    return { ok: true, text: json.choices?.[0]?.message?.content || '' };
+  } catch (err) {
+    return { ok: false, error: String(err && err.message ? err.message : err) };
   }
 });
 
