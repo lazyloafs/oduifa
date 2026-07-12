@@ -47,10 +47,16 @@ function sharedThemes(texts: string[]): string[] {
     .map(([w]) => w);
 }
 
+export type InquiryContext = {
+  seekerName?: string;
+  question?: string;
+};
+
 export function buildTriangulationPrompt(
   main: OduThrow,
   supports: OduThrow[],
-  records: { throw: OduThrow; record?: OduRecord }[]
+  records: { throw: OduThrow; record?: OduRecord }[],
+  inquiry?: InquiryContext
 ): string {
   const blocks = records
     .map(({ throw: th, record }, i) => {
@@ -62,8 +68,15 @@ export function buildTriangulationPrompt(
     })
     .join('\n\n');
 
-  return `Triangulate an Ifá reading from the main odù and support signs (omolúos).
+  const seeker = inquiry?.seekerName?.trim();
+  const question = inquiry?.question?.trim();
+  const inquiryBlock =
+    seeker || question
+      ? `\nSeeker: ${seeker || '(unnamed)'}\nQuestion: ${question || '(none)'}\nRelate the odù synthesis to this question where the corpus allows.\n`
+      : '';
 
+  return `Triangulate an Ifá reading from the main odù and support signs (omolúos).
+${inquiryBlock}
 Main odù: ${main.displayName}
 Supports: ${supports.map((s) => s.displayName).join(', ') || '(none)'}
 
@@ -82,7 +95,8 @@ ${blocks}`;
 export function localTriangulate(
   main: OduThrow,
   supports: OduThrow[],
-  records: { throw: OduThrow; record?: OduRecord }[]
+  records: { throw: OduThrow; record?: OduRecord }[],
+  inquiry?: InquiryContext
 ): string {
   const mainRec = records[0]?.record;
   const supportRecs = records
@@ -98,6 +112,14 @@ export function localTriangulate(
   const lines: string[] = [];
   lines.push('## Local synthesis (translating corpus themes)');
   lines.push('');
+  const seeker = inquiry?.seekerName?.trim();
+  const question = inquiry?.question?.trim();
+  if (seeker || question) {
+    lines.push(
+      `Inquiry for **${seeker || 'the seeker'}**: ${question || '(no question given)'}.`
+    );
+    lines.push('');
+  }
   lines.push(
     `Reading centered on **${main.displayName}**, refined by ${
       supports.length

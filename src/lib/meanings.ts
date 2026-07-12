@@ -99,6 +99,8 @@ export interface ReadingDescription {
   rightMeaning: string;
   leftMeaning: string;
   combinationNote: string;
+  seekerName?: string;
+  question?: string;
   translating?: boolean;
 }
 

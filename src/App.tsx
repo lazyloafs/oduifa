@@ -72,6 +72,8 @@ export default function App() {
   const [reading, setReading] = useState<ReadingDescription | null>(null);
   const [enSections, setEnSections] = useState<SectionHit[]>([]);
   const [enFullText, setEnFullText] = useState('');
+  const [seekerName, setSeekerName] = useState('');
+  const [question, setQuestion] = useState('');
 
   useEffect(() => {
     loadCorpus().then(setCorpus).catch(() => setCorpus([]));
@@ -83,12 +85,26 @@ export default function App() {
     () => extractSections(mainRecord?.text || ''),
     [mainRecord]
   );
+  const canCast =
+    seekerName.trim().length > 0 && question.trim().length > 0;
 
-  const localizeAfterCast = async (th: OduThrow, record?: OduRecord) => {
-    const base = describeReading(th, record);
+  const localizeAfterCast = async (
+    th: OduThrow,
+    record: OduRecord | undefined,
+    inquiry: { seekerName: string; question: string }
+  ) => {
+    const base: ReadingDescription = {
+      ...describeReading(th, record),
+      seekerName: inquiry.seekerName,
+      question: inquiry.question,
+    };
     setReading(base);
     const localized = await localizeReading(base);
-    setReading(localized);
+    setReading({
+      ...localized,
+      seekerName: inquiry.seekerName,
+      question: inquiry.question,
+    });
 
     const secs = extractSections(record?.text || '');
     const translatedSecs: SectionHit[] = [];
@@ -118,6 +134,9 @@ export default function App() {
   };
 
   const onMainThrow = () => {
+    const name = seekerName.trim();
+    const q = question.trim();
+    if (!name || !q) return;
     animateThrow(() => {
       const t = throwOpele();
       setMain(t);
@@ -130,7 +149,7 @@ export default function App() {
       setEnFullText('');
       setTab('reading');
       const rec = findOdu(corpus, t.id);
-      void localizeAfterCast(t, rec);
+      void localizeAfterCast(t, rec, { seekerName: name, question: q });
     });
   };
 
@@ -180,7 +199,11 @@ export default function App() {
       { throw: main, record: findOdu(corpus, main.id) },
       ...supports.map((s) => ({ throw: s, record: findOdu(corpus, s.id) })),
     ];
-    const prompt = buildTriangulationPrompt(main, supports, records);
+    const inquiry = {
+      seekerName: reading?.seekerName || seekerName.trim(),
+      question: reading?.question || question.trim(),
+    };
+    const prompt = buildTriangulationPrompt(main, supports, records, inquiry);
 
     if (window.opwele?.triangulateOpenAI) {
       const res = await window.opwele.triangulateOpenAI({ prompt });
@@ -193,7 +216,7 @@ export default function App() {
       }
     }
 
-    const local = localTriangulate(main, supports, records);
+    const local = localTriangulate(main, supports, records, inquiry);
     const en = await localizeTriangulationSnippets(local);
     setTriText(en);
     setTriMode('local');
@@ -209,8 +232,8 @@ export default function App() {
         <p className="hero-kicker">Ifá · Lucumí</p>
         <h1 className="hero-brand">Opwele</h1>
         <p className="hero-sub">
-          Cast the opelé, read the sign, and see what was divined — in English —
-          plus a 21-day plan.
+          Name yourself and the question you bring, cast the opelé, and see what
+          was divined — in English — plus a 21-day plan.
         </p>
         <div className="corpus-pill">
           <strong>
@@ -224,10 +247,41 @@ export default function App() {
         <OpeleVisual throwData={main} spinning={spinning} />
 
         <div className="cast-actions">
+          <div className="cast-intake">
+            <label className="cast-field" htmlFor="seeker-name">
+              Name
+              <input
+                id="seeker-name"
+                type="text"
+                autoComplete="name"
+                placeholder="Who is asking?"
+                value={seekerName}
+                onChange={(e) => setSeekerName(e.target.value)}
+                disabled={busy}
+              />
+            </label>
+            <label className="cast-field" htmlFor="seeker-question">
+              Question
+              <textarea
+                id="seeker-question"
+                rows={2}
+                placeholder="What do you bring to Ifá?"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                disabled={busy}
+              />
+            </label>
+            {!canCast && (
+              <p className="cast-intake-hint">
+                Enter your name and question before casting.
+              </p>
+            )}
+          </div>
+
           <button
             className="btn btn-primary btn-lg"
             onClick={onMainThrow}
-            disabled={busy}
+            disabled={busy || !canCast}
             type="button"
           >
             {spinning ? 'Casting…' : 'Cast opelé'}

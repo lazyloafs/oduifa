@@ -12,8 +12,9 @@ export function ReadingCard({ reading, sourceUrl, isMeji }: ReadingCardProps) {
       <div className="reading-card is-empty">
         <h2>What was divined</h2>
         <p>
-          When you cast the opelé, the odù, its meaning, and what Ifá says
-          (translated to English from the orula.org corpus) will appear here.
+          Enter your name and the question you bring to Ifá, then cast the
+          opelé. The odù, its meaning, and what Ifá says (translated to English
+          from the orula.org corpus) will appear here.
         </p>
       </div>
     );
@@ -23,6 +24,19 @@ export function ReadingCard({ reading, sourceUrl, isMeji }: ReadingCardProps) {
     <article className="reading-card">
       <header className="reading-head">
         <p className="reading-kicker">What was divined</p>
+        {(reading.seekerName || reading.question) && (
+          <div className="reading-inquiry">
+            {reading.seekerName && (
+              <p className="reading-for">For {reading.seekerName}</p>
+            )}
+            {reading.question && (
+              <blockquote className="reading-question">
+                <span className="quote-label">Question</span>
+                {reading.question}
+              </blockquote>
+            )}
+          </div>
+        )}
         <h2>{reading.headline}</h2>
         {isMeji && <span className="meji-badge">Meji · Major odù</span>}
         {reading.translating && (
