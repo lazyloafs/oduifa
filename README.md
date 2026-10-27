@@ -11,6 +11,8 @@ Repo: [github.com/lazyloafs/oduifa](https://github.com/lazyloafs/oduifa)
 3. **Triangular lectura** — OpenAI if `OPENAI_API_KEY` is set, else local corpus synthesis
 4. **Plan 21 días (NSGA-II)** — multi-objective evolutionary search over daily actions distilled from the odù texts
 
+Alongside step 1 (and again after step 2), **the babalawo's answer** reads the cast against the seeker's question with [Jev](https://typesafe.ai) — see below.
+
 ## NSGA-II (21-day advice)
 
 [NSGA-II](https://ieeexplore.ieee.org/document/996017) (Deb et al.) maintains a Pareto front of plans that trade off competing goals. Here each individual is a **21-gene genome** (one advice action per day) drawn from a pool built from the main + support corpus (refranes, cuidados, prácticas, vínculos, plus rest anchors).
@@ -28,11 +30,43 @@ After evolution, the app picks a **knee / compromise** point on the Pareto front
 
 Defaults: population 48, generations 40, crossover 0.9, mutation 0.12.
 
+## The babalawo's answer (Jev)
+
+When the opelé lands, the app sends the cast to TypeSafe's **Jev** model together with the seeker's question and the relevant parts of the odù's corpus text (*Ifá dice*, *Refranes*, *Nace en este signo*, *Síntesis profética*). Jev is a fast typed classifier, so it answers narrow questions in **one request**, and the English wording of the answer is composed in code from those typed answers (`src/lib/jev.ts`):
+
+| Question | Type | Used for |
+|----------|------|----------|
+| `topic` | Choice | Area of life asked about |
+| `sensitive` | Choice | Crisis / medical / legal / harm check — these get a human redirect instead of a divination |
+| `is_yes_no` | Noul | Whether to give a short yes/no at all |
+| `tone` | Choice | **Ire** / **Osogbo** / mixed / text silent on this matter |
+| `favorable` | Noul | Yes / no / conditional (cross-checked against `tone`) |
+| `caution` | Score | How much care the text asks (4 situation-based levels) |
+| `advice` | Choice | Act now / wait / change approach / make an offering |
+| `offering_mentioned` | Noul | Flags that the text mentions an ebó (to take to a babalawo) |
+| `supports_effect` | Choice | After *Supports*: reinforce / soften / sharpen / unrelated |
+
+Thresholds (confidence floors, yes/no cut-offs, the deliberately low self-harm trigger) live together at the top of `src/lib/jev.ts`. Low confidence yields "the opelé does not speak clearly to this" rather than a guess. A **How this was read** panel shows the raw probabilities.
+
+Setup (desktop app only — the key stays in the Electron main process, never in the page):
+
+```powershell
+$env:TYPESAFE_API_KEY = "..."
+# optional: pin a model once you've tuned thresholds on it
+$env:TYPESAFE_MODEL = "jev-1.13.0"
+npm run dev:electron
+```
+
+or put `TYPESAFE_API_KEY=...` in a `.env` file at the project root (gitignored). Without a key the card says so and the rest of the app works as before.
+
+**Privacy:** the seeker's *name* is never sent; the question and corpus excerpts are. Test offline (no key needed) with `npm run test:jev`.
+
 ## Stack
 
 - Electron + Vite + React + TypeScript
 - Offline corpus in `data/odus.json` (~254/256 pages; two combinations missing on orula.org)
 - Optional OpenAI triangulation
+- Optional Jev (`@typesafe-ai/sdk`) for the babalawo's answer
 
 ## Setup
 

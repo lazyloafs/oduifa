@@ -4,6 +4,58 @@ const fs = require('fs');
 
 const isDev = !app.isPackaged;
 
+/** Load KEY=value pairs from a project-root .env (gitignored) without overriding real env vars. */
+function loadDotEnv() {
+  try {
+    const raw = fs.readFileSync(path.join(__dirname, '..', '.env'), 'utf8');
+    for (const line of raw.split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/);
+      if (!m || line.trim().startsWith('#')) continue;
+      const val = m[2].replace(/^(['"])(.*)\1$/, '$2');
+      if (process.env[m[1]] === undefined) process.env[m[1]] = val;
+    }
+  } catch {
+    /* no .env — fine */
+  }
+}
+loadDotEnv();
+
+const JEV_TYPES = new Set(['noul', 'choice', 'score']);
+let jevClient = null;
+
+function getJevClient() {
+  if (jevClient) return jevClient;
+  const { TypeSafeClient } = require('@typesafe-ai/sdk');
+  jevClient = new TypeSafeClient({
+    apiKey: process.env.TYPESAFE_API_KEY,
+    // Pin a model version here once thresholds are tuned (see README); default is jev-latest.
+    defaultModel: process.env.TYPESAFE_MODEL || undefined,
+    timeout: 15000,
+    retry: { maxRetries: 1 },
+    compression: false, // Electron 33 ships Node 20; zstd needs 22.15+
+  });
+  return jevClient;
+}
+
+/** Cheap shape check so the renderer can only send well-formed system_one requests. */
+function validateJevRequest(req) {
+  if (!req || typeof req !== 'object') return 'bad request';
+  if (!req.state || typeof req.state !== 'object') return 'bad state';
+  if (JSON.stringify(req.state).length > 60000) return 'state too large';
+  const qs = req.questions;
+  if (!qs || typeof qs !== 'object') return 'bad questions';
+  const names = Object.keys(qs);
+  if (names.length < 1 || names.length > 16) return 'bad question count';
+  for (const n of names) {
+    const q = qs[n];
+    if (!q || !JEV_TYPES.has(q.type)) return `bad question type: ${n}`;
+    if (typeof q.instructions !== 'string') return `bad instructions: ${n}`;
+    if (q.type === 'choice' && (!q.criteria || typeof q.criteria !== 'object')) return `bad criteria: ${n}`;
+    if (q.type === 'score' && (!Array.isArray(q.criteria) || q.criteria.length < 2)) return `bad criteria: ${n}`;
+  }
+  return null;
+}
+
 function corpusPath() {
   // Prefer project data/ next to app root in dev; beside resources when packaged
   const candidates = [
@@ -84,6 +136,27 @@ ipcMain.handle('ai:triangulate', async (_evt, payload) => {
     return { ok: true, mode: 'openai', text };
   } catch (err) {
     return { ok: false, mode: 'openai', error: String(err && err.message ? err.message : err) };
+  }
+});
+
+ipcMain.handle('jev:consult', async (_evt, req) => {
+  if (!process.env.TYPESAFE_API_KEY) return { ok: false, error: 'NO_KEY' };
+  const bad = validateJevRequest(req);
+  if (bad) return { ok: false, error: `INVALID: ${bad}` };
+  try {
+    const res = await getJevClient().systemOne({
+      state: req.state,
+      questions: req.questions,
+    });
+    // Return plain JSON only (the SDK result may carry class instances).
+    return {
+      ok: true,
+      model: res.model,
+      answers: JSON.parse(JSON.stringify(res.answers)),
+      usage: res.usage,
+    };
+  } catch (err) {
+    return { ok: false, error: String(err && err.message ? err.message : err) };
   }
 });
 

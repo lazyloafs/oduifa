@@ -4,4 +4,5 @@ contextBridge.exposeInMainWorld('opwele', {
   loadCorpus: () => ipcRenderer.invoke('corpus:load'),
   triangulateOpenAI: (payload) => ipcRenderer.invoke('ai:triangulate', payload),
   translateOpenAI: (payload) => ipcRenderer.invoke('ai:translate', payload),
+  jevConsult: (req) => ipcRenderer.invoke('jev:consult', req),
 });

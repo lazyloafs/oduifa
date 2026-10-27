@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { throwOpele, type OduThrow } from './lib/opele';
+import { consultOracle } from './lib/jev';
+import { BabalawoAnswer, type ConsultState } from './components/BabalawoAnswer';
 import {
   corpusStats,
   extractSections,
@@ -74,6 +76,25 @@ export default function App() {
   const [enFullText, setEnFullText] = useState('');
   const [seekerName, setSeekerName] = useState('');
   const [question, setQuestion] = useState('');
+  const [consult, setConsult] = useState<ConsultState>({ status: 'idle' });
+  const consultSeq = useRef(0);
+
+  /** Ask Jev to read this cast against the question. Stale results are dropped. */
+  const runConsult = async (
+    th: OduThrow,
+    sup: OduThrow[],
+    q: string
+  ) => {
+    const seq = ++consultSeq.current;
+    setConsult({ status: 'loading' });
+    const records = [
+      { throw: th, record: findOdu(corpus, th.id) },
+      ...sup.map((s) => ({ throw: s, record: findOdu(corpus, s.id) })),
+    ];
+    const outcome = await consultOracle(th, sup, records, q);
+    if (seq !== consultSeq.current) return;
+    setConsult(outcome);
+  };
 
   useEffect(() => {
     loadCorpus().then(setCorpus).catch(() => setCorpus([]));
@@ -150,6 +171,7 @@ export default function App() {
       setTab('reading');
       const rec = findOdu(corpus, t.id);
       void localizeAfterCast(t, rec, { seekerName: name, question: q });
+      void runConsult(t, [], q);
     });
   };
 
@@ -163,6 +185,8 @@ export default function App() {
       setTriText('');
       setTriMode('idle');
       setPlan(null);
+      // The supports can reinforce, soften or sharpen the main reading: ask again with them.
+      void runConsult(main, list, reading?.question || question.trim());
     });
   };
 
@@ -353,6 +377,7 @@ export default function App() {
 
       {tab === 'reading' && (
         <div className="tab-panel">
+          <BabalawoAnswer state={consult} proverb={reading?.proverb} />
           <ReadingCard
             reading={reading}
             sourceUrl={main?.sourceUrl}

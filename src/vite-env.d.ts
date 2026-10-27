@@ -18,6 +18,9 @@ export interface OpweleAPI {
     text?: string;
     error?: string;
   }>;
+  jevConsult: (req: import('./lib/jev').JevRequest) => Promise<
+    import('./lib/jev').JevResponse
+  >;
 }
 
 declare global {

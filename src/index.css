@@ -948,3 +948,93 @@ a:hover {
     max-width: 320px;
   }
 }
+
+/* ---------- Babalawo's answer (Jev) ---------- */
+.babalawo {
+  border-color: var(--gold);
+}
+.babalawo h2 {
+  margin: 0.25rem 0 0.6rem;
+  color: var(--cream);
+}
+.babalawo.kind-redirect {
+  border-color: var(--danger);
+}
+.babalawo.kind-unclear {
+  border-color: var(--border);
+}
+.babalawo.is-muted,
+.babalawo.is-loading {
+  border-color: var(--border);
+}
+.babalawo-line {
+  margin: 0.35rem 0;
+  line-height: 1.5;
+}
+.verdict-chip {
+  display: inline-block;
+  margin: 0 0 0.5rem;
+  padding: 0.15rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.verdict-chip.chip-yes {
+  color: var(--ok);
+  border-color: var(--ok);
+}
+.verdict-chip.chip-no {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+.verdict-chip.chip-conditional {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+.caution-meter {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0.7rem 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.caution-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.caution-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ok), var(--gold), var(--danger));
+}
+.jev-raw {
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.jev-raw summary {
+  cursor: pointer;
+}
+.jev-raw table {
+  width: 100%;
+  margin-top: 0.4rem;
+  border-collapse: collapse;
+}
+.jev-raw th,
+.jev-raw td {
+  text-align: left;
+  padding: 0.2rem 0.5rem 0.2rem 0;
+  vertical-align: top;
+}
+.jev-raw-note,
+.jev-disclaimer {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
