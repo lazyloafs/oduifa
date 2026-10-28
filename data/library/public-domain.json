@@ -1,0 +1,165 @@
+{
+  "about": "Verbatim passages from public-domain books, cut from archive.org OCR text with minimal declared cleanups. Written by outside observers in the 19th and early 20th centuries; historical documents, not authoritative statements of the tradition.",
+  "sources": [
+    {
+      "id": "ellis-1894",
+      "short": "Ellis 1894",
+      "author": "A. B. Ellis",
+      "title": "The Yoruba-speaking Peoples of the Slave Coast of West Africa",
+      "year": 1894,
+      "archiveId": "yorubaspeakingp00elligoog",
+      "license": "Public domain (author d. 1894)",
+      "url": "https://archive.org/details/yorubaspeakingp00elligoog"
+    },
+    {
+      "id": "dennett-1906",
+      "short": "Dennett 1906",
+      "author": "R. E. Dennett",
+      "title": "At the Back of the Black Man's Mind",
+      "year": 1906,
+      "archiveId": "atbackofblackman00denn",
+      "license": "Public domain (author d. 1921)",
+      "url": "https://archive.org/details/atbackofblackman00denn"
+    },
+    {
+      "id": "farrow-1926",
+      "short": "Farrow 1926",
+      "author": "S. S. Farrow",
+      "title": "Faith, Fancies and Fetich, or Yoruba Paganism",
+      "year": 1926,
+      "archiveId": "faithfanciesfeti00farr",
+      "license": "Public domain in the US by publication date (author’s death date not verified)",
+      "url": "https://archive.org/details/faithfanciesfeti00farr"
+    }
+  ],
+  "passages": [
+    {
+      "id": "method-story",
+      "source": "farrow-1926",
+      "locator": "p. 39",
+      "role": "method",
+      "point": "method",
+      "text": "Then, when an Odu appears on the consulting bowl, the diviner thinks of the most appropriate story attached to it, suitable to the case about which he is consulted, and so gives the oracular response and prescribes the appropriate sacrifice.",
+      "ocr": "Then, when an Odu appears on the consulting bowl, the diviner thinks of the most appropriate story attached to it, suitable to the case about which he is consulted, and so gives the oracular response and prescribes the appropriate sacrifice."
+    },
+    {
+      "id": "method-parable",
+      "source": "farrow-1926",
+      "locator": "p. 39",
+      "role": "method",
+      "point": "parable",
+      "text": "The response of an Odu is given in the form of a parable.\n\nIfa always speaks in parables,\nIt is the wise man who understands—\nIf we should say we understand—\nThe wise man will understand—\nWhen we do not understand,\nWe say, It is of no account! (or, It is not fulfilled!)",
+      "ocr": "The response of an Odu is given in the form of a parable. […] Ifa always speaks in parables, It is the wise man who understands— If we should say we understand— The wise man will understand— When we do not understand, We say, It is of no account ! (or, It is not fulfilled !)"
+    },
+    {
+      "id": "ifa-role",
+      "source": "farrow-1926",
+      "locator": "p. 36",
+      "role": "method",
+      "point": "ifa-role",
+      "text": "…he is the greatest oracle of the whole Yoruba country and is consulted on all important occasions. He decides what orisha each new-born child is to worship. He tells, in time of trouble, famine, sickness, etc., which gods have been offended and what sacrifices they demand.",
+      "ocr": "he is the greatest oracle of the whole Yoruba country “and is consulted on all important occasions. He decides what orisha each new-born child is to worship. He tells, in time of trouble, famine, sickness, etc., which gods have been offended and what sacrifices they demand."
+    },
+    {
+      "id": "stories-dennett",
+      "source": "dennett-1906",
+      "locator": "Appendix, p. 247",
+      "role": "method",
+      "point": "stories",
+      "text": "There is a series of traditional stories, each of which is called a road, a pathway, or a course, and is connected with some particular Odu. Each Odu is supposed to have 1,680 of these stories connected with it, and these, together with those of the other Odus, every one aspiring to the office of \"A Babalawo\" who is a divining or sacrificing priest, is expected to commit to memory, though scarcely has any one been found to perform the feat.",
+      "ocr": "There is a series of traditional stories, each of which is called a road, a pathway, or a course, and is connected with some particular Odii. Each Odii is supposed to have 1,680 of these stories connected with it, and these, together with those of the other Odiis, every one aspiring to the office of “A Babalawo\" who is a divining or sacrificing priest, is expected to commit to memory, though scarcely has any one been found to perform the feat."
+    },
+    {
+      "id": "stories-farrow",
+      "source": "farrow-1926",
+      "locator": "p. 39",
+      "role": "method",
+      "point": "stories",
+      "text": "…in connection with each Odu there are supposed to be 1680 traditional stories, each of which is represented by a brief couplet, which must be memorised…",
+      "ocr": "in connection with each Odu there are supposed to be 1680 traditional stories, each of which is represented by a brief couplet, which must be memorised"
+    },
+    {
+      "id": "opele-dennett",
+      "source": "dennett-1906",
+      "locator": "ch. XXII, p. 233",
+      "role": "opele",
+      "point": "opele",
+      "text": "But Ifa is always attended by his offspring Opele, the other great oracular God of the Yoruba whom the diviners consult every day.",
+      "ocr": "But Ifa is always attended by his offspring Op^LE, the other great oracular God of the Yoruba whom the diviners consult every day."
+    },
+    {
+      "id": "opele-ellis",
+      "source": "ellis-1894",
+      "locator": "ch. on the gods, no. 6 “Ifa” (page not verified; OCR is noisy)",
+      "role": "opele",
+      "point": "opele",
+      "text": "Ifa has an attendant or companion named Odu (? One who emulates), and a messenger called Opele (ope, puzzle, or ope, palm-tree).",
+      "ocr": "Ifa has an attendant or companion named Odu (? One who emulates), and a messenger called Opele (ope, pnzzle, or ope, palm-tree)."
+    },
+    {
+      "id": "medicine-dennett",
+      "source": "dennett-1906",
+      "locator": "Appendix, p. 254",
+      "role": "health",
+      "point": "medicine",
+      "jev": "filter",
+      "text": "…in the traditional sayings of every Olodu, or Odu, mention is always to be found made of sufferers from this or that form of disease and of the remedies that cured them effectually.",
+      "ocr": "in the traditional sayings of every Olodu, or Odu, mention is always to be found made of sufferers from this or that form of disease and of the remedies that cured them effectually."
+    },
+    {
+      "id": "ejiogbe-principal",
+      "source": "dennett-1906",
+      "locator": "Appendix, p. 247",
+      "role": "principal",
+      "point": "ejiogbe-principal",
+      "applies": {
+        "odus": [
+          "Ejiogbe"
+        ]
+      },
+      "text": "Eji Ogbe is regarded the most principal, \"The Dux\" or \"Imperabor\" and King, whose appearance on the consulting bowl is always regarded as indicating the communication of a message of very great importance, since earthly sovereigns are not accustomed to come and stand out before their people themselves and set aside for the time being their representatives or deputies except when the communication to be delivered is one of uncommon importance.",
+      "ocr": "Eji Ogbfe is regarded the most principal, “ The Dux\" or \" Imperabor” and King,” whose appearance on the consulting bowl is always regarded as indicating the communication of a message of very great importance, since earthly sovereigns are not accustomed to come and stand out before their people themselves and set aside for the time being their representatives or deputies except when the communication to be delivered is one of uncommon importance."
+    },
+    {
+      "id": "ejiogbe-verse",
+      "source": "farrow-1926",
+      "locator": "p. 40",
+      "role": "verse",
+      "point": "ejiogbe-verse",
+      "jev": "annotate",
+      "applies": {
+        "odus": [
+          "Ejiogbe"
+        ]
+      },
+      "note": "Farrow gives this as a verse a babalawo may recite with the authority of Eji Ogbe when it appears (English translation only; the Yoruba text is omitted because its OCR is unusable).",
+      "text": "When we wash our face,\nWhen we wash our nose,\nWe finish off beneath the chin.\nIfa was consulted for Orunmila once, going to receive authority from the Almighty. He sacrificed. And the Almighty gave him authority. When all the world heard that he had received authority from the Almighty they came to him. All that he said came to pass. Ever since then we say, \"It will come to pass!\"",
+      "ocr": "When we wash our face, When we wash our nose, We finish off beneath the chin. Ifa was consulted for Orunmila once, going to receive authority from the Almighty. He sacrificed. And the Almighty gave him authority. When all the world heard that he had received authority from the Almighty they came to him. All that he said came to pass. Ever since then we say, “‘ 1t will come to pass!"
+    },
+    {
+      "id": "combination-dennett",
+      "source": "dennett-1906",
+      "locator": "Appendix, p. 247",
+      "role": "combination",
+      "point": "combination",
+      "applies": {
+        "nonMeji": true
+      },
+      "convention": "left-first",
+      "text": "Subordinate Odus are constituted and represented by the conjunction of two principal Odus at one and the same time upon the consulting and divining bowl, the one on the right and the other on the left, this simultaneous appearance and their conjunction uniting to give them their respective names […] The first of the two names in combination is always that of the Odu which appears on the left-hand side.",
+      "ocr": "Subordinate Odiis are constituted and represented by the con- junction of two principal Odiis at one and the same time upon the consulting and divining bowl, the one on the right and the other on the left, this simultaneous appearance and their conjunction uniting to give them their respective names […] The first of the two names in combination is always that of the Odii which appears on the left-hand side."
+    },
+    {
+      "id": "meji-dennett",
+      "source": "dennett-1906",
+      "locator": "Appendix, p. 247",
+      "role": "combination",
+      "point": "meji",
+      "applies": {
+        "meji": true
+      },
+      "text": "Eji or meji means two, double, or a pair.",
+      "ocr": "Ejl or meji means two, double, or a pair."
+    }
+  ]
+}

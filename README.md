@@ -61,6 +61,24 @@ or put `TYPESAFE_API_KEY=...` in a `.env` file at the project root (gitignored).
 
 **Privacy:** the seeker's *name* is never sent; the question and corpus excerpts are. Test offline (no key needed) with `npm run test:jev`.
 
+## The old books (public-domain library)
+
+Under the babalawo's answer, a **From the old books** panel adds verbatim passages from public-domain books, picked by how the opelé landed and cited with author, year, page and a link to the scan:
+
+| Landed | Passages shown |
+|--------|----------------|
+| Ejiogbe on a leg (or among the supports) | Dennett on Eji Ogbe as the principal odù whose appearance signals a message of great importance; Farrow's Eji Ogbe verse (English translation) |
+| A Meji | Dennett: *eji / meji* means a pair |
+| A mixed pair | Dennett on how two principal odùs combine — with a note that his source names the pair **left-first**, while this app follows the Cuban Lucumí convention (as orula.org does) and reads the **right leg first** |
+| Always (collapsed) | How a babalawo reads (the story attached to an odù, the parable, the sacrifice prescribed), Ifá's role, and Opelé as Ifá's messenger/offspring — where two sources say the same thing, the panel says they agree |
+| A question about health | Dennett's note that every odù's sayings mention sufferers and their remedies — shown only when Jev judges it bears on the question |
+
+Sources (all on archive.org): Ellis, *The Yoruba-speaking Peoples of the Slave Coast* (1894); Dennett, *At the Back of the Black Man's Mind* (1906); Farrow, *Faith, Fancies and Fetich* (1926).
+
+**What this is not.** These are accounts by outside observers, 1894–1926. They contain method and a handful of odù-specific notes, **not** a per-odù verse corpus; almost all printed collections of ese Ifá (Bascom, Abimbola, Fatunmbi, …) are still in copyright and are deliberately not included. The odù-by-odù text remains `data/odus.json` (orula.org).
+
+Passages live in `data/library/public-domain.json`, cut from the archive.org OCR text between anchor phrases by `scripts/build-library.mjs`. Any OCR cleanup (e.g. *Odii* → *Odu*) is declared in that script, the raw OCR is stored beside each passage, and the build fails if a cleaned passage differs from its OCR by anything other than punctuation. Rebuild with `node scripts/build-library.mjs` (add `--cache <dir>` to reuse downloaded `<archiveId>.txt` files). The library works without a TypeSafe key; Jev only adds the relevance judgement.
+
 ## Stack
 
 - Electron + Vite + React + TypeScript

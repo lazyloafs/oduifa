@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { throwOpele, type OduThrow } from './lib/opele';
-import { consultOracle } from './lib/jev';
+import { bearsFrom, consultOracle } from './lib/jev';
+import { retrieve } from './lib/library';
+import { OldBooks } from './components/OldBooks';
 import { BabalawoAnswer, type ConsultState } from './components/BabalawoAnswer';
 import {
   corpusStats,
@@ -101,6 +103,10 @@ export default function App() {
   }, []);
 
   const stats = useMemo(() => corpusStats(corpus), [corpus]);
+  const library = useMemo(
+    () => (main ? retrieve(main, supports) : null),
+    [main, supports]
+  );
   const mainRecord = main ? findOdu(corpus, main.id) : undefined;
   const sections = useMemo(
     () => extractSections(mainRecord?.text || ''),
@@ -378,6 +384,14 @@ export default function App() {
       {tab === 'reading' && (
         <div className="tab-panel">
           <BabalawoAnswer state={consult} proverb={reading?.proverb} />
+          {library && (
+            <OldBooks
+              result={library}
+              bears={
+                consult.status === 'ok' ? bearsFrom(consult.verdict.raw) : undefined
+              }
+            />
+          )}
           <ReadingCard
             reading={reading}
             sourceUrl={main?.sourceUrl}
